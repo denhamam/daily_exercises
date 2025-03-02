@@ -3,6 +3,9 @@ title: "daily9"
 name: Ainsley Denham
 format: html
 editor: visual
+
+execute:
+  echo: true
 ---
 ```{r}
 library(datasets)

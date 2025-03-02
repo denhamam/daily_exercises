@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "daily9.html",
+    "href": "daily9.html",
+    "title": "daily9",
+    "section": "",
+    "text": "library(datasets)\ndata(\"airquality\")\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.0.4     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(visdat)"
+  },
+  {
+    "objectID": "daily9.html#use-vis_dat-to-check-out-the-data.-does-it-need-cleaning",
+    "href": "daily9.html#use-vis_dat-to-check-out-the-data.-does-it-need-cleaning",
+    "title": "daily9",
+    "section": "2. Use vis_dat to check out the data. Does it need cleaning?",
+    "text": "2. Use vis_dat to check out the data. Does it need cleaning?\n\nvis_dat(airquality)\n\n\n\n\n\n\n\n# Yes it needs cleaning there are missing values\nairquality_clean &lt;- na.omit(airquality)"
+  },
+  {
+    "objectID": "daily9.html#fit-a-linear-model-to-the-cleaned-data-to-predict-ozone-from-one-of-the-possible-predictors-of-your-choosing.-why-did-you-chose-thats-variable",
+    "href": "daily9.html#fit-a-linear-model-to-the-cleaned-data-to-predict-ozone-from-one-of-the-possible-predictors-of-your-choosing.-why-did-you-chose-thats-variable",
+    "title": "daily9",
+    "section": "3. Fit a linear model to the cleaned data to predict Ozone from one of the possible predictors of your choosing. Why did you chose thats variable?",
+    "text": "3. Fit a linear model to the cleaned data to predict Ozone from one of the possible predictors of your choosing. Why did you chose thats variable?\n\nmodel &lt;- lm(Ozone ~ Solar.R, data = airquality_clean)"
+  },
+  {
+    "objectID": "daily9.html#using-summary-does-this-seem-like-a-valid-model",
+    "href": "daily9.html#using-summary-does-this-seem-like-a-valid-model",
+    "title": "daily9",
+    "section": "4. Using summary(), Does this seem like a valid model?",
+    "text": "4. Using summary(), Does this seem like a valid model?\n\nsummary(model)\n\n\nCall:\nlm(formula = Ozone ~ Solar.R, data = airquality_clean)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-48.292 -21.361  -8.864  16.373 119.136 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 18.59873    6.74790   2.756 0.006856 ** \nSolar.R      0.12717    0.03278   3.880 0.000179 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 31.33 on 109 degrees of freedom\nMultiple R-squared:  0.1213,    Adjusted R-squared:  0.1133 \nF-statistic: 15.05 on 1 and 109 DF,  p-value: 0.0001793"
+  },
+  {
+    "objectID": "daily9.html#explain-the-r2-found-in-a-sentence.",
+    "href": "daily9.html#explain-the-r2-found-in-a-sentence.",
+    "title": "daily9",
+    "section": "5. Explain the R^2 found in a sentence.",
+    "text": "5. Explain the R^2 found in a sentence."
+  },
+  {
+    "objectID": "daily9.html#use-broomaugment-to-predict-the-ozone-of-the-cleaned-data",
+    "href": "daily9.html#use-broomaugment-to-predict-the-ozone-of-the-cleaned-data",
+    "title": "daily9",
+    "section": "6. Use broom::augment to predict the Ozone of the cleaned data",
+    "text": "6. Use broom::augment to predict the Ozone of the cleaned data\n\nlibrary(broom)\na &lt;- augment(model, data = airquality_clean)\nhead(a)\n\n# A tibble: 6 × 13\n  .rownames Ozone Solar.R  Wind  Temp Month   Day .fitted .resid    .hat .sigma\n  &lt;chr&gt;     &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;\n1 1            41     190   7.4    67     5     1    42.8  -1.76 0.00904   31.5\n2 2            36     118   8      72     5     2    33.6   2.40 0.0139    31.5\n3 3            12     149  12.6    74     5     3    37.5 -25.5  0.0104    31.4\n4 4            18     313  11.5    62     5     4    58.4 -40.4  0.0270    31.2\n5 7            23     299   8.6    65     5     7    56.6 -33.6  0.0233    31.3\n6 8            19      99  13.8    59     5     8    31.2 -12.2  0.0171    31.5\n# ℹ 2 more variables: .cooksd &lt;dbl&gt;, .std.resid &lt;dbl&gt;"
+  },
+  {
+    "objectID": "daily9.html#use-ggplot-to-plot-the-actual-vs-predicted-ozone",
+    "href": "daily9.html#use-ggplot-to-plot-the-actual-vs-predicted-ozone",
+    "title": "daily9",
+    "section": "7. Use ggplot to plot the actual vs predicted Ozone",
+    "text": "7. Use ggplot to plot the actual vs predicted Ozone"
+  }
+]
