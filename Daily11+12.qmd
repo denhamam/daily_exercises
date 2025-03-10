@@ -1,0 +1,119 @@
+---
+title: "daily11+12"
+format: html
+editor: visual
+---
+
+```{r}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(broom)
+library(purrr)
+library(visdat)
+```
+
+## Part 1
+```{r}
+data("airquality")
+str(airquality)
+summary(airquality)
+```
+
+```{r}
+shapiro.test(airquality$Ozone)
+```
+```{r}
+shapiro.test(airquality$Temp)
+```
+```{r}
+shapiro.test(airquality$Solar.R)
+```
+```{r}
+shapiro.test(airquality$Wind)
+```
+## The purpose of the shapiro-wilk test is to determine if a dataset is normally distributed 
+## The null hypothesis is the dataset is normally distributed. The alternative hypothesis is the dataset is NOT normally distributed 
+## For Ozone the p-value is 2.79e-08, so we reject the null and determine the dataset is not normal. For Temp the p-value is 0.009319, so we reject the null and determine the dataset is not normal. For Solar.R the p-value is 9.492e-06 so we reject the null and determine the dataset is not normal. For Wind the p-value is 0.1178, so we fail to reject the null hypothesis and determine that the dataset is normally distributed. 
+
+## Part 2
+```{r}
+airquality <- airquality %>%
+  mutate(Season = case_when(
+    Month %in% c(11, 12, 1) ~ "Winter",
+    Month %in% c(2, 3, 4) ~ "Spring",
+    Month %in% c(5, 6, 7) ~ "Summer", 
+    Month %in% c( 8, 9, 10) ~ "Fall"
+  ))
+table(airquality$Season)
+```
+## Part 3
+```{r}
+library(recipes)
+airquality_recipe <- recipe(~Temp + Solar.R + Wind + Season, data = airquality) %>%
+   step_impute_mean(Temp, Solar.R, Wind) %>%
+  step_dummy(Season) %>% 
+  step_normalize(all_predictors())
+airquality_prep <- prep(airquality_recipe)
+airquality_processed <- bake(airquality_prep, new_data = airquality)
+head(airquality_processed)
+```
+## The purpose of normalizing data is to make the data usable for statstical analysis 
+## "step_impute_mean()" can be used to replace missing values with the mean
+## It is necessary to prep() and bake() the recipe because they have separate functions. Prep() helps tranform the statistics so Bake() can apply the new data
+
+## Part 4
+```{r}
+lm_model <- lm(Ozone ~ ., data = airquality, na.action = na.exclude)
+summary(lm_model)
+
+```
+## Temp has a higher coefficient and if it increases by one unit, the ozone will increase by units - so Ozone is highly affected by temperature. Wind has a coefficient of -3.30244. This means that if the wind speed is higher, then the Ozone levels will be lower. R^2 is 0.6318, this means that 63.18% of the variablity in the Ozone levels are explained by this model. The p-value is < 2.2e-16. This means that the model is statistically significant
+
+## Part 5
+```{r}
+library(ggpubr)
+augmented_data <- augment(lm_model, data = airquality)
+head(augmented_data)
+```
+```{r}
+hist_plot <- ggplot(augmented_data, aes(x = .resid)) +
+  geom_histogram(bins = 20, fill = "blue", color = "red") +
+  labs(title = "Residuals Histogram", x = "Residuals", y = "Count")
+```
+```{r}
+qq_plot <- ggplot(augmented_data, aes(sample = .resid)) +
+  stat_qq() +
+  stat_qq_line(color = "green") +
+  labs(title = "QQ Plot of Residuals")
+```
+```{r}
+ggarrange(hist_plot, qq_plot, ncol = 2, nrow = 1)
+```
+## For the histogram, the distribution is skewed to the right a bit and is centered around 0. The QQ plot points are mostly following the green line, but the points are slighly curved indicating that the data may not be normally distributed
+```{r}
+ggscatter(augmented_data, x = "Ozone", y = ".fitted",
+          add = "reg.line", conf.int = TRUE,
+          cor.coef = TRUE, cor.method = "spearman",
+          ellipse = TRUE) +
+  labs(title = "Actual vs Predicted Ozone Levels",
+       x = "Actual Ozone Levels",
+       y = "Predicted Ozone Levels")
+```
+## I think this model is strong because the majority of the points are within the circle and follow the line
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
